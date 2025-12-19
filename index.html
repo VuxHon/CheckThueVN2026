@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>So sánh Thuế HKD và Doanh Nghiệp</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .input-section {
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .input-group input {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .results-section {
+            padding: 30px;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .result-card {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .result-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        .result-header.hkd {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .result-header.dn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .result-table tr {
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .result-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .result-table td {
+            padding: 12px 15px;
+            font-size: 14px;
+        }
+
+        .result-table td:first-child {
+            font-weight: 600;
+            color: #495057;
+            width: 50%;
+            background: #f8f9fa;
+        }
+
+        .result-table td:last-child {
+            text-align: right;
+            color: #212529;
+            font-family: 'Courier New', monospace;
+        }
+
+        .result-table tr.total-profit-row td{
+            font-weight: 700;
+            font-size: 16px;
+            color: #78BB7B;
+        }
+
+        .result-table tr.total-vat-row td{
+            font-weight: 700;
+            font-size: 16px;
+            color: #F45F7F;
+        }
+
+        .result-table tr.total-row td {
+            background: #fff3cd;
+            font-weight: 700;
+            font-size: 16px;
+            color: #856404;
+        }
+
+        .note {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #0d47a1;
+        }
+
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>So sánh Thuế HKD và Doanh Nghiệp</h1>
+            <p>So sánh thuế của Hộ Kinh Doanh và Doanh Nghiệp Mảng Bán Lẻ</p>
+        </div>
+
+        <div class="input-section">
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="revenue">Doanh Thu Bán Ra (Bao gồm VAT) - VNĐ</label>
+                    <input type="text" id="revenue" placeholder="Ví dụ: 5.000.000.000" value="5.000.000.000">
+                </div>
+                <div class="input-group">
+                    <label for="taxRate">Mức Thuế TNCN/DN (%)</label>
+                    <input type="text" id="taxRate" placeholder="Ví dụ: 17" value="17">
+                </div>
+                <div class="input-group">
+                    <label for="costPercent">% Giá Vốn (so với doanh thu)</label>
+                    <input type="text" id="costPercent" placeholder="Ví dụ: 55" value="55">
+                </div>
+                <div class="input-group">
+                    <label for="fixedExpenses">Chi Phí Cố Định (VNĐ/năm)</label>
+                    <input type="text" id="fixedExpenses" placeholder="Ví dụ: 1.800.000.000" value="1.800.000.000">
+                </div>
+            </div>
+        </div>
+
+        <div class="results-section">
+            <div class="results-grid">
+                <!-- Hộ Kinh Doanh -->
+                <div class="result-card">
+                    <div class="result-header hkd">Hộ Kinh Doanh (HKD)</div>
+                    <table class="result-table">
+                        <tr>
+                            <td>Doanh Thu Bán Ra (Bao gồm VAT)</td>
+                            <td id="hkd-revenue">-</td>
+                        </tr>
+                        <tr>
+                            <td>Mức thuế VAT</td>
+                            <td>1%</td>
+                        </tr>
+                        <tr>
+                            <td>Phương pháp tính VAT</td>
+                            <td>Trực tiếp</td>
+                        </tr>
+                        <tr class="total-vat-row">
+                            <td>Số tiền VAT Phải Nộp</td>
+                            <td id="hkd-vat-payable">-</td>
+                        </tr>
+                        <tr>
+                            <td>Giá Vốn Hàng Bán</td>
+                            <td id="hkd-cost">-</td>
+                        </tr>
+                        <tr>
+                            <td>Chi Phí Được Trừ</td>
+                            <td id="hkd-expenses">-</td>
+                        </tr>
+                        <tr class="total-profit-row">
+                            <td>Lợi Nhuận Tính Thuế</td>
+                            <td id="hkd-profit">-</td>
+                        </tr>
+                        <tr>
+                            <td>Mức Thuế TNCN/DN</td>
+                            <td id="hkd-tax-rate">-</td>
+                        </tr>
+                        <tr>
+                            <td>Thuế TNCN/DN</td>
+                            <td id="hkd-tax">-</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>TỔNG THUẾ PHẢI NỘP</td>
+                            <td id="hkd-total">-</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Doanh Nghiệp -->
+                <div class="result-card">
+                    <div class="result-header dn">Doanh Nghiệp (DN)</div>
+                    <table class="result-table">
+                        <tr>
+                            <td>Doanh Thu Bán Ra (Bao gồm VAT)</td>
+                            <td id="dn-revenue">-</td>
+                        </tr>
+                        <tr>
+                            <td>Mức thuế VAT</td>
+                            <td>8%</td>
+                        </tr>
+                        <tr>
+                            <td>Phương pháp tính VAT</td>
+                            <td>Khấu trừ</td>
+                        </tr>
+                        <tr>
+                            <td>VAT Đầu Ra</td>
+                            <td id="dn-vat-output">-</td>
+                        </tr>
+                        <tr>
+                            <td>VAT Đầu Vào</td>
+                            <td id="dn-vat-input">-</td>
+                        </tr>
+                        <tr class="total-vat-row">
+                            <td>Số tiền VAT Phải Nộp</td>
+                            <td id="dn-vat-payable">-</td>
+                        </tr>
+                        <tr>
+                            <td>Doanh Thu Sau VAT</td>
+                            <td id="dn-revenue-after-vat">-</td>
+                        </tr>
+                        <tr>
+                            <td>Giá Vốn Hàng Bán</td>
+                            <td id="dn-cost">-</td>
+                        </tr>
+                        <tr>
+                            <td>Chi Phí Được Trừ</td>
+                            <td id="dn-expenses">-</td>
+                        </tr>
+                        <tr class="total-profit-row">
+                            <td>Lợi Nhuận Tính Thuế</td>
+                            <td id="dn-profit">-</td>
+                        </tr>
+                        <tr>
+                            <td>Mức Thuế TNCN/DN</td>
+                            <td id="dn-tax-rate">-</td>
+                        </tr>
+                        <tr>
+                            <td>Thuế TNCN/DN</td>
+                            <td id="dn-tax">-</td>
+                        </tr>
+                        <tr class="total-row">
+                            <td>TỔNG THUẾ PHẢI NỘP</td>
+                            <td id="dn-total">-</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="note">
+                <strong>Lưu ý:</strong> Tỷ lệ VAT và chi phí có thể thay đổi theo ngành nghề. Các con số trong bảng chỉ mang tính chất tham khảo. 
+                Mỗi HKD hoặc DN nên cung cấp số liệu chính xác để xác định giải pháp tối ưu nhất.
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
