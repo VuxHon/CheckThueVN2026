@@ -40,9 +40,9 @@ function parseInputNumber(value) {
 function setupInputFormatting() {
     const revenueInput = document.getElementById('revenue');
     const fixedExpensesInput = document.getElementById('fixedExpenses');
-    
+    const directorSalaryInput = document.getElementById('directorSalary');
     // Format cho các input số lớn (doanh thu và chi phí)
-    [revenueInput, fixedExpensesInput].forEach(input => {
+    [revenueInput, fixedExpensesInput, directorSalaryInput].forEach(input => {
         input.addEventListener('input', function(e) {
             const cursorPosition = this.selectionStart;
             const oldValue = this.value;
@@ -137,7 +137,7 @@ function calculate() {
     // 9. Chi phí được trừ (chưa VAT) = Chi phí có VAT / (1 + 8%)
     // Thêm lương giám đốc 15.5tr/tháng * 12 = 186tr/năm
     const dnExpensesBeforeVAT = calculateValueWithoutVAT(fixedExpenses);
-    const directorSalary = 186000000; // 15.5tr * 12
+    const directorSalary = parseInputNumber(document.getElementById('directorSalary').value)*12; // 15.5tr * 12
     const dnExpenses = dnExpensesBeforeVAT + directorSalary;
     
     // 10. Lợi nhuận tính thuế = Doanh thu sau VAT - Giá vốn - Chi phí
